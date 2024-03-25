@@ -1,22 +1,22 @@
 "use client";
-import { ResultRangeValues } from "../../components/Range/Range.types";
+import { MinMaxValues } from "../../components/Range/Range.types";
 import styles from "./styles.module.scss";
 import { ChangeEvent, useEffect, useState } from "react";
 import Range from "../../components/Range";
 import Link from "next/link";
 import { getMinMax } from "../../helpers/api-util";
 
-export default function Exercise1() {
-  const [selectedValues, setSelectedValues] = useState<ResultRangeValues>({
+export default function NormalRange() {
+  const [selectedValues, setSelectedValues] = useState<MinMaxValues>({
     minValue: 20,
     maxValue: 77,
   });
-  const [rangeValues, setRangeValues] = useState<ResultRangeValues>({
+  const [rangeValues, setRangeValues] = useState<MinMaxValues>({
     minValue: 0,
     maxValue: 200,
   });
 
-  const handleChange = (values: ResultRangeValues) => {
+  const handleChange = (values: MinMaxValues) => {
     setSelectedValues(values);
   };
 
@@ -74,7 +74,7 @@ export default function Exercise1() {
     <main className={styles.main}>
       <Link href='/'>X</Link>
       <div className={styles.rangeContainer}>
-        <h1>Range Normal</h1>
+        <h1>Normal Range</h1>
         <div className={styles.inputsContainer}>
           <label>
             Min Value

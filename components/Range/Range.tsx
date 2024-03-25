@@ -37,6 +37,7 @@ const Range = ({
       tabIndex={0}
       aria-valuemin={min}
       aria-valuemax={max}
+      aria-valuenow={currentValues.minValue}
       style={{
         width: width ? `${width}px` : "100%",
       }}

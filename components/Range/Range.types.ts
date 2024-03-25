@@ -4,12 +4,12 @@ import { KeyboardEvent, MouseEvent, RefObject, TouchEvent } from "react";
 interface SharedRangeProps {
   min: number;
   max: number;
-  // possibleValues: number[];
+  possibleValues?: number[];
   width?: number;
   withLabel?: boolean;
 }
 
-export interface ResultRangeValues {
+export interface MinMaxValues {
   minValue: number;
   maxValue: number;
 }
@@ -17,7 +17,7 @@ export interface ResultRangeValues {
 export type MinMax = "min" | "max";
 
 export interface RangeProps extends SharedRangeProps {
-  currentValues: ResultRangeValues;
+  currentValues: MinMaxValues;
   isDragging: boolean;
   onMouseDown: (event: MouseEvent, handle: MinMax) => void;
   onTouchStart: (event: TouchEvent, handle: MinMax) => void;
@@ -25,7 +25,6 @@ export interface RangeProps extends SharedRangeProps {
 }
 
 export interface RangeContainerProps extends SharedRangeProps {
-  initialValues: ResultRangeValues;
-  onChange: (currentValue: ResultRangeValues) => void;
-  step?: number;
+  initialValues: MinMaxValues;
+  onChange: (currentValue: MinMaxValues) => void;
 }

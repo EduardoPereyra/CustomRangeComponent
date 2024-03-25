@@ -6,7 +6,7 @@ import {
   TouchEvent,
   useCallback,
 } from "react";
-import { MinMax, RangeContainerProps, ResultRangeValues } from "./Range.types";
+import { MinMax, RangeContainerProps, MinMaxValues } from "./Range.types";
 import Range from "./Range";
 
 const RangeContainer = ({
@@ -16,13 +16,19 @@ const RangeContainer = ({
   onChange,
   width,
   withLabel = false,
+  possibleValues,
 }: RangeContainerProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
-
   const [currentValues, setCurrentValues] =
-    useState<ResultRangeValues>(initialValues);
+    useState<MinMaxValues>(initialValues);
   const [isDragging, setIsDragging] = useState(false);
   const [activeHandle, setActiveHandle] = useState<MinMax | null>(null);
+  const [minMax, setMinMax] = useState<MinMaxValues>({
+    minValue: possibleValues?.length ? possibleValues[0] : min,
+    maxValue: possibleValues?.length
+      ? possibleValues[possibleValues.length - 1]
+      : max,
+  });
 
   const moveSliderPosition = useCallback(
     (event: MouseEvent | TouchEvent, handle: MinMax) => {
@@ -36,16 +42,22 @@ const RangeContainer = ({
           sliderBoundingClientRect.left;
         const totalWidth = sliderBoundingClientRect.width;
 
-        let selectedValue = Math.round((posX / totalWidth) * (max - min) + min);
-        selectedValue = Math.max(min, selectedValue);
-        selectedValue = Math.min(max, selectedValue);
+        let selectedValue = Math.round(
+          (posX / totalWidth) * (minMax.maxValue - minMax.minValue) +
+            minMax.minValue
+        );
+        selectedValue = Math.max(minMax.minValue, selectedValue);
+        selectedValue = Math.min(minMax.maxValue, selectedValue);
 
         if (handle === "min") {
           setCurrentValues({ ...currentValues, minValue: selectedValue });
           if (selectedValue >= currentValues.maxValue) {
             setCurrentValues({
               ...currentValues,
-              maxValue: selectedValue + 1 < max ? selectedValue + 1 : max,
+              maxValue:
+                selectedValue + 1 < minMax.maxValue
+                  ? selectedValue + 1
+                  : minMax.maxValue,
             });
           }
         } else if (handle === "max") {
@@ -53,13 +65,16 @@ const RangeContainer = ({
           if (selectedValue <= currentValues.minValue) {
             setCurrentValues({
               ...currentValues,
-              minValue: selectedValue - 1 > min ? selectedValue - 1 : min,
+              minValue:
+                selectedValue - 1 > minMax.minValue
+                  ? selectedValue - 1
+                  : minMax.minValue,
             });
           }
         }
       }
     },
-    [max, min, currentValues]
+    [minMax, currentValues]
   );
 
   const handleMouseDown = useCallback(
@@ -146,12 +161,18 @@ const RangeContainer = ({
 
   useEffect(() => {
     setCurrentValues(initialValues);
-  }, [initialValues]);
+    setMinMax({
+      minValue: possibleValues?.length ? possibleValues[0] : min,
+      maxValue: possibleValues?.length
+        ? possibleValues[possibleValues.length - 1]
+        : max,
+    });
+  }, [initialValues, min, max, possibleValues]);
 
   return (
     <Range
-      min={min}
-      max={max}
+      min={minMax.minValue}
+      max={minMax.maxValue}
       width={width}
       withLabel={withLabel}
       currentValues={currentValues}
