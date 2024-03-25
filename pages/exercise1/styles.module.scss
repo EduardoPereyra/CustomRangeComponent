@@ -1,0 +1,25 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: 6rem;
+  min-height: 100vh;
+}
+
+.rangeContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputsContainer {
+  display: flex;
+  justify-content: space-between;
+  input {
+    margin: 0 10px;
+    padding: 5px 10px;
+    font-size: 1.1em;
+  }
+}
+
+.rangeContainer > * {
+  margin: 1rem;
+}

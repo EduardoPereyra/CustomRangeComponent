@@ -1,0 +1,15 @@
+.main {
+  margin: 3rem;
+  ul {
+    margin-top: 2rem;
+  }
+  li {
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+    &:hover {
+      outline: 1px solid white;
+    }
+  }
+}
