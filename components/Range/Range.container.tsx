@@ -36,7 +36,7 @@ const RangeContainer = ({
       if (sliderBoundingClientRect) {
         const posX =
           ((event as MouseEvent).clientX ||
-            (event as TouchEvent).touches[0].clientX) -
+            (event as TouchEvent)?.touches[0]?.clientX) -
           sliderBoundingClientRect.left;
         const totalWidth = sliderBoundingClientRect.width;
         let selectedValue = Math.round(
