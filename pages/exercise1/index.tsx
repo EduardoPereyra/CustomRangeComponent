@@ -8,12 +8,12 @@ import { getMinMax } from "../../helpers/api-util";
 
 export default function NormalRange() {
   const [selectedValues, setSelectedValues] = useState<MinMaxValues>({
-    minValue: 20,
-    maxValue: 77,
+    minValue: 0,
+    maxValue: 0,
   });
   const [rangeValues, setRangeValues] = useState<MinMaxValues>({
     minValue: 0,
-    maxValue: 200,
+    maxValue: 0,
   });
 
   const handleChange = (values: MinMaxValues) => {
@@ -70,8 +70,13 @@ export default function NormalRange() {
     getDataMinMax();
   }, []);
 
-  if (!selectedValues) {
-    return <main className={styles.main}>Loading...</main>;
+  if (rangeValues.minValue === 0 && rangeValues.maxValue === 0) {
+    return (
+      <main className={styles.main}>
+        <Link href='/'>X</Link>
+        <h2 className={styles.loading}>Loading...</h2>
+      </main>
+    );
   }
 
   return (
