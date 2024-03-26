@@ -8,8 +8,8 @@ import Link from "next/link";
 export default function FixedRange() {
   const possibleValues = [0, 25, 50, 75, 100];
   const [selectedValues, setSelectedValues] = useState<MinMaxValues>({
-    minValue: possibleValues[0],
-    maxValue: possibleValues[1],
+    minValue: possibleValues[1],
+    maxValue: possibleValues[2],
   });
 
   const handleChange = (values: MinMaxValues) => {

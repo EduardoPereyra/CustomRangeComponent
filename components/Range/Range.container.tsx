@@ -24,10 +24,8 @@ const RangeContainer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [activeHandle, setActiveHandle] = useState<MinMax | null>(null);
   const [minMax, setMinMax] = useState<MinMaxValues>({
-    minValue: possibleValues?.length ? possibleValues[0] : min,
-    maxValue: possibleValues?.length
-      ? possibleValues[possibleValues.length - 1]
-      : max,
+    minValue: possibleValues ? Math.min(...possibleValues) : min,
+    maxValue: possibleValues ? Math.max(...possibleValues) : max,
   });
 
   const moveSliderPosition = useCallback(
@@ -41,18 +39,16 @@ const RangeContainer = ({
             (event as TouchEvent).touches[0].clientX) -
           sliderBoundingClientRect.left;
         const totalWidth = sliderBoundingClientRect.width;
-
         let selectedValue = Math.round(
           (posX / totalWidth) * (minMax.maxValue - minMax.minValue) +
             minMax.minValue
         );
         selectedValue = Math.max(minMax.minValue, selectedValue);
         selectedValue = Math.min(minMax.maxValue, selectedValue);
-
         if (handle === "min") {
-          setCurrentValues({ ...currentValues, minValue: selectedValue });
+          saveCurrentValues({ ...currentValues, minValue: selectedValue });
           if (selectedValue >= currentValues.maxValue) {
-            setCurrentValues({
+            saveCurrentValues({
               ...currentValues,
               maxValue:
                 selectedValue + 1 < minMax.maxValue
@@ -61,9 +57,9 @@ const RangeContainer = ({
             });
           }
         } else if (handle === "max") {
-          setCurrentValues({ ...currentValues, maxValue: selectedValue });
+          saveCurrentValues({ ...currentValues, maxValue: selectedValue });
           if (selectedValue <= currentValues.minValue) {
-            setCurrentValues({
+            saveCurrentValues({
               ...currentValues,
               minValue:
                 selectedValue - 1 > minMax.minValue
@@ -74,6 +70,7 @@ const RangeContainer = ({
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [minMax, currentValues]
   );
 
@@ -159,14 +156,29 @@ const RangeContainer = ({
     handleTouchEnd,
   ]);
 
+  const findNearestValue = (value: number) => {
+    if (!possibleValues) return value;
+    return possibleValues.reduce((prev, curr) => {
+      return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev;
+    });
+  };
+
+  const saveCurrentValues = (values: MinMaxValues) => {
+    setCurrentValues({
+      minValue: findNearestValue(values.minValue),
+      maxValue: findNearestValue(values.maxValue),
+    });
+  };
+
   useEffect(() => {
-    setCurrentValues(initialValues);
+    saveCurrentValues(initialValues);
     setMinMax({
       minValue: possibleValues?.length ? possibleValues[0] : min,
       maxValue: possibleValues?.length
         ? possibleValues[possibleValues.length - 1]
         : max,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues, min, max, possibleValues]);
 
   return (
