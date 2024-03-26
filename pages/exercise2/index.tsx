@@ -1,20 +1,43 @@
 "use client";
 import { MinMaxValues } from "../../components/Range/Range.types";
 import styles from "./styles.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Range from "../../components/Range";
 import Link from "next/link";
+import { getPosibleValues } from "../../helpers/api-util";
 
 export default function FixedRange() {
-  const possibleValues = [0, 25, 50, 75, 100];
+  const [possibleValues, setPossibleValues] = useState<number[]>([]);
   const [selectedValues, setSelectedValues] = useState<MinMaxValues>({
-    minValue: possibleValues[1],
-    maxValue: possibleValues[2],
+    minValue: 0,
+    maxValue: 0,
   });
 
   const handleChange = (values: MinMaxValues) => {
     setSelectedValues(values);
   };
+
+  const getDataPosibleValues = async () => {
+    const data = await getPosibleValues();
+    setPossibleValues(data.rangeValues);
+    setSelectedValues({
+      minValue: Math.min(...data.rangeValues),
+      maxValue: Math.max(...data.rangeValues),
+    });
+  };
+
+  useEffect(() => {
+    getDataPosibleValues();
+  }, []);
+
+  if (possibleValues.length === 0) {
+    return (
+      <main className={styles.main}>
+        <Link href='/'>X</Link>
+        <h2 className={styles.loading}>Loading...</h2>
+      </main>
+    );
+  }
 
   return (
     <main className={styles.main}>

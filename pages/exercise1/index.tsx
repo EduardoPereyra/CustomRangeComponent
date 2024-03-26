@@ -70,6 +70,10 @@ export default function NormalRange() {
     getDataMinMax();
   }, []);
 
+  if (!selectedValues) {
+    return <main className={styles.main}>Loading...</main>;
+  }
+
   return (
     <main className={styles.main}>
       <Link href='/'>X</Link>
